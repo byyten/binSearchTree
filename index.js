@@ -12,6 +12,56 @@ srchTree = (list) => {
     _list = Array.from(new Set(list)).sort((a, b) => a - b) // sorted, unique instanceof Array
     _start = 0
     _end = _list.length - 1
+    del = (data, _node) => {
+        // 3 cases - no subords, 1 subord, 2 subord ()
+        go = data < _node.data ? 'left' : 'right'
+        if (_node[go].data === data) {
+            //  && _node[go].left === null && _node[go].right === null
+            // _node = _node[go]
+            console.log(['(_node[go].data === data)',_node[go].data, data])
+            if (_node[go].left == null && _node[go].right == null) {
+                // eol -> del 
+                _node[go] = null
+            } else if (_node[go].left !== null && _node[go].right !== null) { // two subords
+                // look on go side for next highest or lowest, del 
+                // and replace current node with next
+                let go_opp = go == 'left' ? 'right' : 'left'
+                console.log(['_node[go].data',_node[go].data, data, 'go', go, 'opp', go_opp])
+                let _parent = _node[go]
+                let _next = _parent[go_opp]
+                while (_next[go] !== null) {
+                    console.log(['opp', _next[go].data])
+                    _next = _next[go]
+                } 
+                _target = _next.data
+                _parent.data = _target
+                console.log(['target', _target, 'nxt data', _next.data, 'nxt go', _next[go], 'nxt opp', _next[go_opp]])
+                if (_parent[go_opp][go]) {
+
+                    // correct for all configs it seems 
+                    // except where data == _root  ok: _parent[go_opp][go] = null 
+                    _parent[go_opp][go] = null
+                } else {
+                    _parent[go_opp] = null
+                }
+            } else if (_node[go].left !== null || _node[go].right !== null) {
+                // has one child
+                grandchild(go, _node)
+
+            } else {
+                console.log('missed criteria')
+            }
+        } else {
+            console.log(['recurse', _node[go].data, data])
+            del(data, _node[go])
+        }
+    }
+                // grandchild(go, _node)
+                // if (_node[go].left !== null) {
+                //     _node[go] = _node[go].left
+                // } else {
+                //     _node[go] = _node[go].right
+                // }
     build = (array, start, end) => {
         if (start > end) { return null }
         let mid = parseInt((start + end) / 2)
@@ -54,60 +104,6 @@ srchTree = (list) => {
             _node[go] = _node[go].left
         } else {
             _node[go] = _node[go].right
-        }
-    }
-    del = (data, _node) => {
-        // 3 cases - no subords, 1 subord, 2 subord ()
-        go = data < _node.data ? 'left' : 'right'
-        if (_node[go].data === data) {
-            //  && _node[go].left === null && _node[go].right === null
-            // _node = _node[go]
-            console.log([_node[go].data, data])
-            if (_node[go].left == null && _node[go].right == null) {
-                // eol -> del 
-                _node[go] = null
-            } else if (_node[go].left !== null && _node[go].right !== null) { // two subords
-                // look on go side for next highest or lowest, del 
-                // and replace current node with next
-                // go = 'left' // data < _node.data ? 'left' : 'right'
-                let go_opp = go == 'left' ? 'right' : 'left'
-                console.log(['_node[go].data',_node[go].data, data, 'go', go, 'opp', go_opp])
-                let _parent = _node[go]
-                let sub = _parent[go_opp]
-                let _next = _parent[go_opp]
-                while (_next[go] !== null) {
-                    console.log(['opp', _next[go].data])
-                    sub = _next
-                    _next = _next[go]
-                } 
-                _target = _next.data
-                _parent.data = _target
-                console.log(['target', _target, 'nxt data', _next.data, 'nxt go', _next[go], 'nxt opp', _next[go_opp]])
-                console.log(['sub', sub])
-                if (_next[go] === null) {
-                    console.log(' fdgd    1')
-                    sub[go] = null
-                } 
-                if (sub[go_opp] !== null) {
-                    console.log(' fdgdgfs   2')
-                    _parent[go_opp] = sub[go_opp] // _next[go] // _next //  sub // _next[go]
-                    // sub[go] = null
-                }
-                
-            } else if (_node[go].left !== null || _node[go].right !== null) {
-                // has one child
-                grandchild(go, _node)
-                // if (_node[go].left !== null) {
-                //     _node[go] = _node[go].left
-                // } else {
-                //     _node[go] = _node[go].right
-                // }
-            } else {
-                console.log('missed criteria')
-            }
-        } else {
-            console.log(['recurse', _node[go].data, data])
-            del(data, _node[go])
         }
     }
     _root = build(_list, _start, _end)
@@ -176,15 +172,45 @@ bst.prettyPrint(bst._root)
 
 
 bst = srchTree(array)
-bst.del(3, bst._root)
+bst.del(12, bst._root)
 bst.prettyPrint(bst._root)
 
 
-data = 67
-go = 'right'
-_node = bst._root .right  // [go]
+array = Array.from(new Set([1, 2, 8, 6, 10,15, 11,12,13,14, 7, 4,  9, 4, 3, 5, 7, 9])).sort((a, b) => a - b)
+bst = srchTree(array)
+bst._root
+bst.prettyPrint(bst._root)
 
 
+n = node('root')
+n.right = bst._root
+bst.del(8, n)
+bst.prettyPrint(n)
+
+bst.del(8, bst._root)
+bst.prettyPrint(bst._root)
+
+bst.del(12, bst._root)
+bst.prettyPrint(bst._root)
+
+bst.del(4, bst._root)
+bst.prettyPrint(bst._root)
+
+
+
+
+bst.del(10, bst._root)
+bst.prettyPrint(bst._root)
+
+bst.del(11, bst._root)
+bst.prettyPrint(bst._root)
+
+
+/// xxx  bst.del(8, bst._root)
+///      bst.prettyPrint(bst._root)
+
+bst.del(10, bst._root)
+bst.prettyPrint(bst._root)
 
 
 array = Array.from(new Set([1, 7, 4, 8])).sort((a, b) => a - b)
