@@ -35,9 +35,9 @@ randomisedInput = (nInputs = 20, upto = 100) => {
 
 orderPrints = (bst) => {
     bst.levelOrder(bst._root)
-    bst.inorder(bst._root)
-    bst.preorder(bst._root)
-    bst.postorder(bst._root) 
+    bst.inOrder(bst._root)
+    bst.preOrder(bst._root)
+    bst.postOrder(bst._root) 
 }
 
 test = () => {
@@ -99,8 +99,8 @@ srchTree = (list) => {
             _node[go] = node(data)
         } else {            
             // keep going there
-            console.log([go, subnode, _node.data])
-            console.log([_node.left ? _node.left.data : null, data, _node.right ? _node.right.data : null])
+            // console.log([go, subnode, _node.data])
+            // console.log([_node.left ? _node.left.data : null, data, _node.right ? _node.right.data : null])
             ins(data, _node[go])
         }
     }
@@ -118,16 +118,16 @@ srchTree = (list) => {
                 // look on go side for next highest or lowest, del 
                 // and replace current node with next
                 let go_opp = go == 'left' ? 'right' : 'left'
-                console.log(['_node[go].data',_node[go].data, data, 'go', go, 'opp', go_opp])
+                // console.log(['_node[go].data',_node[go].data, data, 'go', go, 'opp', go_opp])
                 let _parent = _node[go]
                 let _next = _parent[go_opp]
                 while (_next[go] !== null) {
-                    console.log(['opp', _next[go].data])
+                    // console.log(['opp', _next[go].data])
                     _next = _next[go]
                 } 
                 _target = _next.data
                 _parent.data = _target
-                console.log(['target', _target, 'nxt data', _next.data, 'nxt go', _next[go], 'nxt opp', _next[go_opp]])
+                // console.log(['target', _target, 'nxt data', _next.data, 'nxt go', _next[go], 'nxt opp', _next[go_opp]])
                 if (_parent[go_opp][go]) {
 
                     // correct for all configs it seems 
@@ -144,7 +144,7 @@ srchTree = (list) => {
                 console.log('missed criteria')
             }
         } else {
-            console.log(['recurse', _node[go].data, data])
+            // console.log(['recurse', _node[go].data, data])
             del(data, _node[go])
         }
     }
@@ -160,7 +160,7 @@ srchTree = (list) => {
         if (_node.data === data) {
             return _node
         } else if (_node[go] !== null) {
-            console.log([_node.data, go])
+            // console.log([_node.data, go])
             find(data, _node[go])
         } 
         return -1
@@ -172,79 +172,71 @@ srchTree = (list) => {
             _node.level = level
             return _node
         } else if (_node[go] !== null) {
-            console.log([_node.data, go])
+            // console.log([_node.data, go])
             depth(data, _node[go], ++level)
         }
     }
     height = () => {}
     levelOrder = (_node) => {
         let q = new queue()
-        let levord = []
-        // levord.push(_node.data)
-        // q.enq({ data: _node.data, node: _node })
+        let levelorder = []
         q.enq(_node)
-        // iterate over tree to visit each/every
-        // console.log(q.list)
-        
+        // iterate over tree to visit each/every        
         while (q.list.length > 0) {
             _node = q.deq()
-            // levord.push(_node.data)
-            // if (_node.left !== null) { q.enq(_node.left) }
-            // if (_node.right !== null) { q.enq(_node.right) }
- 
-            deq_enq(_node, q, levord)
+            deqEnq(_node, q, levelorder)
         }
-        return levord
+        return levelorder
     }
-    deq_enq = (_node, q, levord) => {
+    deqEnq = (_node, q, levelorder) => {
         // console.log([q.list, _node])
-        levord.push(_node.data)
+        levelorder.push(_node.data)
         if (_node.left !== null) { q.enq(_node.left) }
         // console.log(q.list)
         if (_node.right !== null) { q.enq(_node.right) }
         // console.log(q.list)
-        // console.log(levord)
+        // console.log(levelorder)
     }
-    inorder = (_node) => {
+    inOrder = (_node) => {
         _data = []
-        _inorder(_node)
+        _inOrder(_node)
         return _data
     }
-    _inorder = (_node) => {
+    _inOrder = (_node) => {
         if (_node === null) { return }
-        _inorder(_node.left)
+        _inOrder(_node.left)
         _data.push(_node.data)
-        _inorder(_node.right)
+        _inOrder(_node.right)
     }
-    preorder = (_node) => {
+    preOrder = (_node) => {
         _data = []
-        _preorder(_node)
+        _preOrder(_node)
         return _data
     }
-    _preorder = (_node) => {
+    _preOrder = (_node) => {
         if (_node === null) { return }
         _data.push(_node.data)
-        _preorder(_node.left)
-        _preorder(_node.right)
+        _preOrder(_node.left)
+        _preOrder(_node.right)
     }
-    postorder = (_node) => {
+    postOrder = (_node) => {
         _data = []
-        _postorder(_node)
+        _postOrder(_node)
         return _data
     }
-    _postorder = (_node) => {
+    _postOrder = (_node) => {
         if (_node === null) { return }
-        _postorder(_node.left)
-        _postorder(_node.right)
+        _postOrder(_node.left)
+        _postOrder(_node.right)
         _data.push(_node.data)
     }
     isBalanced = (_node) => {
-        _lft = inorder(_node.left)
-        _rght = inorder(_node.right)
+        _lft = inOrder(_node.left)
+        _rght = inOrder(_node.right)
         return (Math.abs(_lft.length - _rght.length) <= 1) ? true : false
     }
     rebalance = (_unbalanced) => {
-        _list = Array.from(new Set(inorder(_unbalanced))).sort((a, b) => a - b)
+        _list = Array.from(new Set(inOrder(_unbalanced))).sort((a, b) => a - b)
         _start = 0
         _end = _list.length - 1
         _root = build(_list, _start, _end)
@@ -252,7 +244,7 @@ srchTree = (list) => {
     }
     _root = build(_list, _start, _end)
     return { _list, _root, build, ins, del, prettyPrint, 
-        isBalanced, rebalance, inorder, preorder, postorder, find, depth, height, levelOrder }
+        isBalanced, rebalance, inOrder, preOrder, postOrder, find, depth, height, levelOrder }
 }
 
 
@@ -263,9 +255,9 @@ bst._root
 bst.prettyPrint(bst._root)
 
 bst.levelOrder(bst._root)
-bst.inorder(bst._root)
-bst.preorder(bst._root)
-bst.postorder(bst._root)
+bst.inOrder(bst._root)
+bst.preOrder(bst._root)
+bst.postOrder(bst._root)
 bst.isBalanced(bst._root) //.right)
 
 bst.ins(45, bst._root)
@@ -285,16 +277,16 @@ bst.ins(23425, bst._root)
 bst.del(23, bst._root)
 bst.del(324, bst._root)
 _data = []
-bst.inorder(bst._root.right)
+bst.inOrder(bst._root.right)
 _data.length
 bst.prettyPrint(bst._root.right)
 
 _data = []
-bst.inorder(bst._root.left)
+bst.inOrder(bst._root.left)
 _data.length
 
 
-inorder(bst._root)
+inOrder(bst._root)
 _data
 
 if (_node.left !== null) {
@@ -311,9 +303,9 @@ if (_node.left !== null) {
 
 
 
-deq_enq = (_node) => {
+deqEnq = (_node) => {
     q.deq(_node)
-    levord.push(_node.data)
+    levelorder.push(_node.data)
     _node.left ? q.enq({ v: _node.left.data, node: _node.left }) : null
     _node.right ? q.enq({ v: _node.right.data, node: _node.right }) : null
 }
