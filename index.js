@@ -23,7 +23,41 @@ class queue {
     }  
 }
 
-                
+randomisedInput = (nInputs = 20, upto = 100) => {
+    rdm_array = []
+    // narray = parseInt(Math.random() * upto + 1)
+    for (n = 0; n < nInputs; n++ ) {
+        rdm_array.push(parseInt(Math.random() * upto + 1)
+        )
+    }
+    return rdm_array
+}
+
+orderPrints = (bst) => {
+    bst.levelOrder(bst._root)
+    bst.inorder(bst._root)
+    bst.preorder(bst._root)
+    bst.postorder(bst._root) 
+}
+
+test = () => {
+    r = randomisedInput()
+    r_bst = srchTree(r)
+    r_bst.prettyPrint(r_bst._root)
+    r_bst.isBalanced(r_bst._root)
+    orderPrints(r_bst)
+
+    r_bst.ins(123, r_bst._root)
+    r_bst.ins(153, r_bst._root)
+    r_bst.isBalanced(r_bst._root)
+    
+    r_bst._root = r_bst.rebalance(r_bst._root)
+    r_bst.isBalanced(r_bst._root)
+    r_bst.prettyPrint(r_bst._root)
+    r_bst.isBalanced(r_bst._root)
+    orderPrints(r_bst)
+
+}
 
 node = (data = null, left=null, right=null) => {
     return { data, left, right }
@@ -33,6 +67,7 @@ srchTree = (list) => {
     _list = Array.from(new Set(list)).sort((a, b) => a - b) // sorted, unique instanceof Array
     _start = 0
     _end = _list.length - 1
+    _root = {}
     build = (array, start, end) => {
         if (start > end) { return null }
         let mid = parseInt((start + end) / 2)
@@ -208,10 +243,16 @@ srchTree = (list) => {
         _rght = inorder(_node.right)
         return (Math.abs(_lft.length - _rght.length) <= 1) ? true : false
     }
-    
+    rebalance = (_unbalanced) => {
+        _list = Array.from(new Set(inorder(_unbalanced))).sort((a, b) => a - b)
+        _start = 0
+        _end = _list.length - 1
+        _root = build(_list, _start, _end)
+        return _root
+    }
     _root = build(_list, _start, _end)
     return { _list, _root, build, ins, del, prettyPrint, 
-        isBalanced, inorder, preorder, postorder, find, depth, height, levelOrder }
+        isBalanced, rebalance, inorder, preorder, postorder, find, depth, height, levelOrder }
 }
 
 
@@ -225,7 +266,16 @@ bst.levelOrder(bst._root)
 bst.inorder(bst._root)
 bst.preorder(bst._root)
 bst.postorder(bst._root)
-bst.isBalanced(bst._root.right)
+bst.isBalanced(bst._root) //.right)
+
+bst.ins(45, bst._root)
+bst.ins(125, bst._root)
+bst.isBalanced(bst._root) //.right)
+bst._root = bst.rebalance(bst._root)
+bst.prettyPrint(bst._root)
+
+
+test()
 
 /*
 
